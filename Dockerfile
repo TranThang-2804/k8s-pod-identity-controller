@@ -1,28 +1,25 @@
-# Build the manager binary
-FROM golang:1.17-alpine as builder
+FROM golang:latest
 
-WORKDIR /workspace
-# Copy the Go Modules manifests
-COPY go.mod go.mod
-COPY go.sum go.sum
-# cache deps before building and copying source so that we don't need to re-download as much
-# and so that source changes don't invalidate our downloaded layer
+# Add Maintainer Info
+LABEL maintainer="Tommy Tran Duc Thang <tranthang.dev@gmail.com>"
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
+# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
 RUN go mod download
 
-# Copy the go source
-COPY main.go main.go
-# COPY api/ api/
-# COPY controllers/ controllers/
+# Copy the source from the current directory to the Working Directory inside the container
+COPY . .
 
-# Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o manager main.go
+# Build the Go app
+RUN go build -o main .
 
-# Use distroless as minimal base image to package the manager binary
-# Refer to https://github.com/GoogleContainerTools/distroless for more details
-FROM alpine
-WORKDIR /
-COPY --from=builder /workspace/manager .
+# Expose port 8080 to the outside world
+EXPOSE 8080
 
-RUN apk add git
-
-ENTRYPOINT ["/manager"]
+# Command to run the executable
+CMD ["./main"]
