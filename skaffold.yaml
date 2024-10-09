@@ -5,8 +5,6 @@ metadata:
 build:
   artifacts:
     - image: cloud-role-identity-controller
-  local:
-    useBuildkit: true
 deploy:
   helm:
     releases:

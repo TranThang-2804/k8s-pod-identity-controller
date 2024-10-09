@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"time"
 
@@ -19,6 +20,10 @@ var (
 )
 
 func init() {
+  fmt.Print("hello world")
+  fmt.Print("hello world")
+  fmt.Print("hello world")
+  fmt.Print("hello world")
 	_ = clientgoscheme.AddToScheme(scheme)
 	// +kubebuilder:scaffold:scheme
 }
