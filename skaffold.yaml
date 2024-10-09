@@ -11,8 +11,8 @@ deploy:
       - name: cloud-role-identity-controller
         chartPath: chart
         setValueTemplates:
-          image.repository: "{{.IMAGE_REPO_tommytran2804/cloud-role-identity-controller}}"
-          image.tag: "{{.IMAGE_TAG_tommytran2804/cloud-role-identity-controller}}@{{.IMAGE_DIGEST_tommytran2804/cloud-role-identity-controller}}"
+          image.repository: "tommytran2804/cloud-role-identity-controller"
+          image.tag: "latest"
         valuesFiles:
           - chart/values.yaml
         version: 0.1.0
