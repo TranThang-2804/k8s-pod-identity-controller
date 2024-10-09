@@ -1,0 +1,11 @@
+version: '3'
+
+tasks:
+  create-cluster:
+    desc: setup k3d cluster
+    cmds:
+      - k3d cluster create
+  dev:
+    desc: running
+    cmds:
+      - skaffold dev
