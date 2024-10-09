@@ -1,0 +1,8 @@
+replicaCount: 1
+
+image:
+  repository: tommytran2804/cloud-role-identity-controller
+  tag: latest
+  pullPolicy: Always
+
+controllerNamespace: ""

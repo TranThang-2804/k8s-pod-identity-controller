@@ -1,0 +1,17 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: k-s-pod-identity-controller
+build:
+  artifacts:
+    - image: tommytran2804/cloud-role-identity-controller
+      buildpacks:
+        builder: gcr.io/buildpacks/builder:v1
+deploy:
+  helm:
+    releases:
+      - name: cloud-role-identity-controller
+        chartPath: chart
+        valuesFiles:
+          - chart/values.yaml
+        version: 0.1.0
