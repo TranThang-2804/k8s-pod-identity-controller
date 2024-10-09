@@ -1,6 +1,8 @@
 module github.com/TranThang-2804/k8s-pod-identity-controller
 
-go 1.23
+go 1.22.0
+
+toolchain go1.22.3
 
 require (
 	github.com/spf13/pflag v1.0.5
