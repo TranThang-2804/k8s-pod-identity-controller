@@ -4,14 +4,16 @@ metadata:
   name: k-s-pod-identity-controller
 build:
   artifacts:
-    - image: tommytran2804/cloud-role-identity-controller
+    - image: cloud-role-identity-controller
+  local:
+    useBuildkit: true
 deploy:
   helm:
     releases:
       - name: cloud-role-identity-controller
         chartPath: chart
         setValueTemplates:
-          image.repository: "tommytran2804/cloud-role-identity-controller"
+          image.repository: "cloud-role-identity-controller"
           image.tag: "latest"
         valuesFiles:
           - chart/values.yaml

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"time"
 
@@ -37,7 +36,6 @@ func main() {
 	pflag.StringVar(&namespace, "namespace", "", "Namespace to watch for resources, defaults to all namespaces")
 	pflag.StringVar(&controllerNamespace, "controller-namespace", "", "Namespace to run the terraform jobs")
 	feature.DefaultMutableFeatureGate.AddFlag(pflag.CommandLine)
-  fmt.Print("hello world")
 
 	// embed klog
 	klog.InitFlags(nil)

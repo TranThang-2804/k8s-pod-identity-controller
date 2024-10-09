@@ -13,11 +13,9 @@ spec:
       labels:
         app: cloud-role-identity-controller
         app.kubernetes.io/name: {{ .Release.Name }}
-        app.kubernetes.io/part-of: kubevela
         app.kubernetes.io/managed-by: helm
     spec:
       containers:
         - name: cloud-role-identity-controller
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-      serviceAccountName: tf-controller-service-account
+      serviceAccountName: cloud-role-identity-controller-service-account
