@@ -1,7 +1,10 @@
 package main
 
 import (
-  "os"
+	"fmt"
+	"os"
+	"time"
+
 	"github.com/spf13/pflag"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apiserver/pkg/util/feature"
@@ -9,7 +12,6 @@ import (
 	"k8s.io/klog/v2"
 	"k8s.io/klog/v2/klogr"
 	ctrl "sigs.k8s.io/controller-runtime"
-	"time"
 )
 
 var (
@@ -35,6 +37,7 @@ func main() {
 	pflag.StringVar(&namespace, "namespace", "", "Namespace to watch for resources, defaults to all namespaces")
 	pflag.StringVar(&controllerNamespace, "controller-namespace", "", "Namespace to run the terraform jobs")
 	feature.DefaultMutableFeatureGate.AddFlag(pflag.CommandLine)
+  fmt.Print("hello world")
 
 	// embed klog
 	klog.InitFlags(nil)

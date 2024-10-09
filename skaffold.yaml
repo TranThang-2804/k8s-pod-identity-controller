@@ -5,13 +5,14 @@ metadata:
 build:
   artifacts:
     - image: tommytran2804/cloud-role-identity-controller
-      buildpacks:
-        builder: gcr.io/buildpacks/builder:v1
 deploy:
   helm:
     releases:
       - name: cloud-role-identity-controller
         chartPath: chart
+        setValueTemplates:
+          image.repository: "{{.IMAGE_REPO_tommytran2804/cloud-role-identity-controller}}"
+          image.tag: "{{.IMAGE_TAG_tommytran2804/cloud-role-identity-controller}}@{{.IMAGE_DIGEST_tommytran2804/cloud-role-identity-controller}}"
         valuesFiles:
           - chart/values.yaml
         version: 0.1.0
