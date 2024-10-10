@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-role-identity-controller
+  namespace: role-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloud-role-identity-controller
+  template:
+    metadata:
+      labels:
+        app: cloud-role-identity-controller
+    spec:
+      containers:
+        - name: cloud-role-identity-controller
+          image: k3d-localregistry.localhost:12345/cloud-role-identity-image
+      serviceAccountName: cloud-role-identity-controller-service-account
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cloud-role-identity-controller-service-account
+  namespace: role-controller
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: role-controller

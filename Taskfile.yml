@@ -4,8 +4,9 @@ tasks:
   create-cluster:
     desc: setup k3d cluster
     cmds:
-      - k3d cluster create
+      - k3d registry create localregistry.localhost --port 12345
+      - k3d cluster create newcluster --registry-use k3d-localregistry.localhost:12345
   dev:
     desc: running
     cmds:
-      - skaffold dev
+      - tilt up
