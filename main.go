@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"time"
 
@@ -20,12 +19,7 @@ var (
 )
 
 func init() {
-  fmt.Print("hello world")
-  fmt.Print("hello world")
-  fmt.Print("hello world")
-  fmt.Print("hello world")
 	_ = clientgoscheme.AddToScheme(scheme)
-	// +kubebuilder:scaffold:scheme
 }
 
 func main() {
@@ -38,7 +32,7 @@ func main() {
 	pflag.BoolVar(&enableLeaderElection, "enable-leader-election", false, "Enable leader election for controller manager, this will ensure there is only one active controller manager.")
 	pflag.DurationVar(&syncPeriod, "informer-re-sync-interval", 10*time.Second, "controller shared informer lister full re-sync period")
 	pflag.StringVar(&metricsAddr, "metrics-addr", ":38080", "The address the metric endpoint binds to.")
-	pflag.StringVar(&namespace, "namespace", "", "Namespace to watch for resources, defaults to all namespaces")
+	pflag.StringVar(&namespace, "namespace", "", "Namespace hehe to watch for resources, defaults to all namespaces")
 	pflag.StringVar(&controllerNamespace, "controller-namespace", "", "Namespace to run the terraform jobs")
 	feature.DefaultMutableFeatureGate.AddFlag(pflag.CommandLine)
 
