@@ -1,12 +1,23 @@
 version: '3'
 
+vars:
+  K3D_CLUSTER_NAME: testcluster
+  LOCAL_IMAGE_REGISTRY_URI: localregistry.localhost
+  LOCAL_IMAGE_REGISTRY_PORT: 12345
+
 tasks:
-  create-cluster:
+  bootstrap:
     desc: setup k3d cluster
     cmds:
-      - k3d registry create localregistry.localhost --port 12345
-      - k3d cluster create newcluster --registry-use k3d-localregistry.localhost:12345
+      - k3d registry create {{.LOCAL_IMAGE_REGISTRY_URI}} --port {{.LOCAL_IMAGE_REGISTRY_PORT}}
+      - k3d cluster create {{.K3D_CLUSTER_NAME}} --registry-use k3d-{{.LOCAL_IMAGE_REGISTRY_URI}}:{{.LOCAL_IMAGE_REGISTRY_PORT}}
   dev:
     desc: running
     cmds:
       - tilt up
+  clean:
+    desc: clean up all resources
+    cmds:
+      - tilt down
+      - k3d cluster delete {{.K3D_CLUSTER_NAME}}
+      - k3d registry delete {{.LOCAL_IMAGE_REGISTRY_URI}}
