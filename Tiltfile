@@ -21,6 +21,12 @@ docker_build_with_restart(
   ],
 )
 
-k8s_yaml('local/deployment.yaml')
+yaml = helm(
+  './chart',
+  name='k8s-cloud-role-controller',
+  namespace='role-controller',
+  set=['image.repository=k3d-localregistry.localhost:12345/cloud-role-identity-image', 'image.tag=latest']
+)
+k8s_yaml(yaml)
 k8s_resource('cloud-role-identity-controller', port_forwards=8080,
              resource_deps=['cloud-role-controller-compile'])
