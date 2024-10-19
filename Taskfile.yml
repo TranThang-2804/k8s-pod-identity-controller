@@ -17,7 +17,6 @@ tasks:
         ./get_helm.sh; }
       - command -v go &> /dev/null || { echo "Go is required. Please install Go"; exit 1; }
       - command -v docker &> /dev/null || { echo "Docker is required. Please install Docker"; exit 1; }
-
   bootstrap:
     desc: setup k3d cluster
     cmds:
@@ -33,3 +32,7 @@ tasks:
       - tilt down
       - k3d cluster delete {{.K3D_CLUSTER_NAME}}
       - k3d registry delete {{.LOCAL_IMAGE_REGISTRY_URI}}
+  kiki:
+    desc: I love you my honey Dayeon
+    cmds:
+      - echo "I love you my baby Dayeon"
