@@ -20,4 +20,4 @@ So use this when:
 ![Architecture Image](./docs/images/design.jpg)
 
 # For Contributing
-![Contributing](./CONTRIBUTING.md)
+[Contributing](./CONTRIBUTING.md)
