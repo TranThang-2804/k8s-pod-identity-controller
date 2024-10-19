@@ -24,7 +24,7 @@ tasks:
       - k3d registry create {{.LOCAL_IMAGE_REGISTRY_URI}} --port {{.LOCAL_IMAGE_REGISTRY_PORT}}
       - k3d cluster create {{.K3D_CLUSTER_NAME}} --registry-use k3d-{{.LOCAL_IMAGE_REGISTRY_URI}}:{{.LOCAL_IMAGE_REGISTRY_PORT}}
   dev:
-    desc: running
+    desc: Setup the application in the local cluster and enable hot reloading for development
     cmds:
       - tilt up
   clean:
