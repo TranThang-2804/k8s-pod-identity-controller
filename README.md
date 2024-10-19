@@ -18,3 +18,6 @@ So use this when:
 
 # Architecture
 ![Architecture Image](./docs/images/design.jpg)
+
+# For Contributing
+![Contributing](./CONTRIBUTING.md)
