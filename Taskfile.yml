@@ -6,6 +6,18 @@ vars:
   LOCAL_IMAGE_REGISTRY_PORT: 12345
 
 tasks:
+  install:
+    desc: install dependancies for macOS and Ubuntu
+    cmds:
+      - command -v tilt &> /dev/null || curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh
+      - command -v k3d &> /dev/null || curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+      - |
+      command -v helm &> /dev/null || curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \
+      chmod 700 get_helm.sh && \
+      ./get_helm.sh
+      - command -v go &> /dev/null || { echo "Go is required. Please install Go"; exit 1; }
+      - command -v docker &> /dev/null || { echo "Docker is required. Please install Docker"; exit 1; }
+
   bootstrap:
     desc: setup k3d cluster
     cmds:
