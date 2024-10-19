@@ -13,8 +13,8 @@ So use this when:
 - You having a local/on prem cluster that need access cloud infra
 - You have multicloud infrastructure
 
-!NOTE:
-    This is good for dev environment, but for production environment, please you this with awareness.
+> NOTE:
+> This is good for dev environment, but for production environment, please you this with awareness.
 
 # Architecture
 ![Architecture Image](./docs/images/design.jpg)
