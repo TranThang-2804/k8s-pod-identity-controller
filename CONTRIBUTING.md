@@ -1,9 +1,13 @@
 ### Prerequisites:
 - Go
-- Helm
 - Tilt
-- K3d
 - Docker
+
+> Tools installed by running ```task install``` if they are not installed
+> - Helm
+> - K3d
+
+### Command
 
 1. Install required tools
 ```
