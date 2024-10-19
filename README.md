@@ -14,7 +14,7 @@ So use this when:
 - You have multicloud infrastructure
 
 > NOTE:
-> This is good for dev environment, but for production environment, please you this with awareness.
+> This is good for dev environment, but for production environment, please use this with awareness.
 
 # Architecture
 ![Architecture Image](./docs/images/design.jpg)
