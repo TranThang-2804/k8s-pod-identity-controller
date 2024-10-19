@@ -4,6 +4,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/TranThang-2804/k8s-pod-identity-controller/controller"
 	"github.com/spf13/pflag"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apiserver/pkg/util/feature"
@@ -43,12 +44,12 @@ func main() {
 	ctrl.SetLogger(klogr.New())
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
-		LeaderElection:     enableLeaderElection,
-		LeaderElectionID:   "ce329a9c.core.oam.dev",
+		LeaderElection:   enableLeaderElection,
+		LeaderElectionID: "ce329a9c.core.oam.dev",
 		// MetricsBindAddress: metricsAddr,
 		// Namespace:          namespace,
 		// Port:               9443,
-		Scheme:             scheme,
+		Scheme: scheme,
 		// SyncPeriod:         &syncPeriod,
 	})
 	if err != nil {
@@ -56,26 +57,24 @@ func main() {
 		os.Exit(1)
 	}
 
-	// if err = (&controllers.ConfigurationReconciler{
-	// 	Client:              mgr.GetClient(),
-	// 	ControllerNamespace: controllerNamespace,
-	// 	Log:                 ctrl.Log.WithName("controllers").WithName("Configuration"),
-	// 	Scheme:              mgr.GetScheme(),
-	// }).SetupWithManager(mgr); err != nil {
-	// 	setupLog.Error(err, "unable to create controller", "controller", "Configuration")
-	// 	os.Exit(1)
-	// }
-	// if err = (&controllers.ProviderReconciler{
-	// 	Client: mgr.GetClient(),
-	// 	Log:    ctrl.Log.WithName("controllers").WithName("Provider"),
-	// 	Scheme: mgr.GetScheme(),
-	// }).SetupWithManager(mgr); err != nil {
-	// 	setupLog.Error(err, "unable to create controller", "controller", "Provider")
-	// 	os.Exit(1)
-	// }
-	// +kubebuilder:scaffold:builder
+	reconciler, err := controller.NewRoleReconciler(mgr)
+	if err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "Pod")
+		os.Exit(1)
+	}
+
+	if err = reconciler.SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to setup controller with manager", "controller", "Pod")
+		os.Exit(1)
+	}
+
+	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
+		setupLog.Error(err, "problem running manager")
+		os.Exit(1)
+	}
 
 	setupLog.Info("starting manager")
+
 	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
 		setupLog.Error(err, "problem running manager")
 		os.Exit(1)
