@@ -9,7 +9,7 @@ tasks:
   install:
     desc: install dependancies for macOS and Ubuntu
     cmds:
-      - command -v tilt &> /dev/null || curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh
+      - command -v tilt &> /dev/null || curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh | bash
       - command -v k3d &> /dev/null || curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
       - |
         command -v helm &> /dev/null || { curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \
