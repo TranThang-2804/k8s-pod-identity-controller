@@ -33,6 +33,6 @@ tasks:
       - k3d cluster delete {{.K3D_CLUSTER_NAME}}
       - k3d registry delete {{.LOCAL_IMAGE_REGISTRY_URI}}
   kiki:
-    desc: I love you my honey Dayeon
+    desc: (Easter Egg) I love you my honey Dayeon :3
     cmds:
-      - echo "I love you my baby Dayeon"
+      - echo "(Easter Egg) I love you my baby Dayeon"
