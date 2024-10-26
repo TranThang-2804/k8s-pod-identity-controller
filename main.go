@@ -57,16 +57,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	reconciler, err := controller.NewServiceAccountReconciler(mgr)
+  controller, err := controller.NewCloudRoleController(mgr)
 	if err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "Pod")
+		setupLog.Error(err, "unable to create controller instance", "controller", "Pod")
 		os.Exit(1)
 	}
-
-	if err = reconciler.SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to setup controller with manager", "controller", "Pod")
-		os.Exit(1)
-	}
+  
+  controller.Start()
 
 	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
 		setupLog.Error(err, "problem running manager")
