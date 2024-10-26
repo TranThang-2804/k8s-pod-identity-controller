@@ -20,7 +20,7 @@ type ServiceAccountReconciler struct {
 	DynamicClient dynamic.Interface
 }
 
-func NewSaReconciler(mgr ctrl.Manager) (*ServiceAccountReconciler, error) {
+func NewServiceAccountReconciler(mgr ctrl.Manager) (*ServiceAccountReconciler, error) {
 	dynamicClient, err := dynamic.NewForConfig(mgr.GetConfig())
 	if err != nil {
 		return nil, fmt.Errorf("failed to create dynamic client: %w", err)
