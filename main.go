@@ -4,7 +4,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/TranThang-2804/k8s-pod-identity-controller/controller"
+	"github.com/TranThang-2804/k8s-pod-identity-controller/pkg/controller"
 	"github.com/spf13/pflag"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apiserver/pkg/util/feature"
@@ -57,7 +57,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	reconciler, err := controller.NewRoleReconciler(mgr)
+	reconciler, err := controller.NewSaReconciler(mgr)
 	if err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Pod")
 		os.Exit(1)

@@ -14,19 +14,19 @@ import (
 )
 
 // Reconciler reconciles a SA object
-type RoleReconciler struct {
+type ServiceAccountReconciler struct {
 	client.Client
 	Scheme        *runtime.Scheme
 	DynamicClient dynamic.Interface
 }
 
-func NewRoleReconciler(mgr ctrl.Manager) (*RoleReconciler, error) {
+func NewSaReconciler(mgr ctrl.Manager) (*ServiceAccountReconciler, error) {
 	dynamicClient, err := dynamic.NewForConfig(mgr.GetConfig())
 	if err != nil {
 		return nil, fmt.Errorf("failed to create dynamic client: %w", err)
 	}
 
-	return &RoleReconciler{
+	return &ServiceAccountReconciler{
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		DynamicClient: dynamicClient,
@@ -34,18 +34,19 @@ func NewRoleReconciler(mgr ctrl.Manager) (*RoleReconciler, error) {
 }
 
 // Reconcile is part of the main Kubernetes reconciliation loop
-func (r *RoleReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *ServiceAccountReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	// Fetch the Pod instance
-	pod := &corev1.Pod{}
-	err := r.Get(ctx, req.NamespacedName, pod)
+	// Fetch the SA
+  sa := &corev1.ServiceAccount{}
+	err := r.Get(ctx, req.NamespacedName, sa)
 	if err != nil {
 		if client.IgnoreNotFound(err) == nil {
-			logger.Info("Pod not found. Ignoring since object must be deleted.", "pod", req.NamespacedName)
+			logger.Info("Service account not found. Ignoring since object must be deleted.", "pod", req.NamespacedName)
+      logger.Info(sa.String())
 			return ctrl.Result{}, nil
 		}
-		logger.Error(err, "Failed to get Pod", "pod", req.NamespacedName)
+		logger.Error(err, "Failed to get Service Account", "pod", req.NamespacedName)
 		return ctrl.Result{}, err
 	}
 
@@ -53,7 +54,7 @@ func (r *RoleReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *RoleReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *ServiceAccountReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&corev1.Pod{}).
 		Complete(r)
