@@ -38,17 +38,17 @@ func (r *ServiceAccountReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	logger := log.FromContext(ctx)
 
 	// Fetch the SA
-  sa := &corev1.ServiceAccount{}
+	sa := &corev1.ServiceAccount{}
 	err := r.Get(ctx, req.NamespacedName, sa)
 	if err != nil {
 		if client.IgnoreNotFound(err) == nil {
-			logger.Info("Service account not found. Ignoring since object must be deleted.", "pod", req.NamespacedName)
-      logger.Info(sa.String())
+			logger.Info("Service account not found. Ignoring since object must be deleted.", "service account", req.NamespacedName)
 			return ctrl.Result{}, nil
 		}
-		logger.Error(err, "Failed to get Service Account", "pod", req.NamespacedName)
+		logger.Error(err, "Failed to get Service Account", "service account", req.NamespacedName)
 		return ctrl.Result{}, err
 	}
+	logger.Info(sa.String())
 
 	return ctrl.Result{}, nil
 }
@@ -56,6 +56,6 @@ func (r *ServiceAccountReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 // SetupWithManager sets up the controller with the Manager.
 func (r *ServiceAccountReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&corev1.Pod{}).
+		For(&corev1.ServiceAccount{}).
 		Complete(r)
 }

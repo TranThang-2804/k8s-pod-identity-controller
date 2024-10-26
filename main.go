@@ -57,7 +57,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	reconciler, err := controller.NewSaReconciler(mgr)
+	reconciler, err := controller.NewServiceAccountReconciler(mgr)
 	if err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Pod")
 		os.Exit(1)
