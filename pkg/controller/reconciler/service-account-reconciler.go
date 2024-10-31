@@ -48,7 +48,6 @@ func (r *ServiceAccountReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 		logger.Error(err, "Failed to get Service Account", "service account", req.NamespacedName)
 		return ctrl.Result{}, err
 	}
-	logger.Info(sa.String())
 
 	return ctrl.Result{}, nil
 }

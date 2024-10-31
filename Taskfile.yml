@@ -4,9 +4,24 @@ vars:
   K3D_CLUSTER_NAME: testcluster
   LOCAL_IMAGE_REGISTRY_URI: localregistry.localhost
   LOCAL_IMAGE_REGISTRY_PORT: 12345
+  BASE_DOCKER_RUN_COMMAND: docker run --rm alpine:latest
+  APP_NAME: role-controller
 
 tasks:
-  install:
+  default:
+    cmds:
+      - task help
+    silent: true
+
+  help:
+    cmds:
+      - echo "Welcome to my project - maintainer<Tommy Tran Duc Thang>"
+      - echo "For local development         flow will be local:install -> local:bootstrap -> local:dev -> local:clean"
+      - echo "For ci                        flow will be ci:execute"
+      - task -l
+    silent: true
+
+  local:install:
     desc: install dependancies for macOS and Ubuntu
     cmds:
       - command -v tilt &> /dev/null || curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh | bash
@@ -17,22 +32,64 @@ tasks:
         ./get_helm.sh; }
       - command -v go &> /dev/null || { echo "Go is required. Please install Go"; exit 1; }
       - command -v docker &> /dev/null || { echo "Docker is required. Please install Docker"; exit 1; }
-  bootstrap:
+
+  local:bootstrap:
     desc: setup k3d cluster
     cmds:
       - k3d registry create {{.LOCAL_IMAGE_REGISTRY_URI}} --port {{.LOCAL_IMAGE_REGISTRY_PORT}}
       - k3d cluster create {{.K3D_CLUSTER_NAME}} --registry-use k3d-{{.LOCAL_IMAGE_REGISTRY_URI}}:{{.LOCAL_IMAGE_REGISTRY_PORT}}
-  dev:
+
+  local:dev:
     desc: Setup the application in the local cluster and enable hot reloading for development
     cmds:
       - tilt up
-  clean:
+
+  local:clean:
     desc: clean up all resources
     cmds:
       - tilt down
       - k3d cluster delete {{.K3D_CLUSTER_NAME}}
       - k3d registry delete {{.LOCAL_IMAGE_REGISTRY_URI}}
-  kiki:
-    desc: (Easter Egg) I love you my honey Dayeon :3
+
+  local:test:
+    desc: Running test
     cmds:
-      - echo "(Easter Egg) I love you my baby Dayeon"
+      - go test
+
+  kiki:
+    desc: (Easter Egg)
+    cmds:
+      - echo "I love you my kiki Dayeon :3"
+
+  build:
+    desc: Building the application
+    cmds:
+      - docker build -t {{.APP_NAME}}:{{.SHA}} .
+    vars:
+      SHA:
+        sh: git rev-parse HEAD
+
+  ci:execute:
+    desc: Execute CI
+    cmds:
+      - task: ci:test
+      - task: ci:build
+      - task: ci:lint
+
+  ci:test:
+    internal: true    
+    desc: Testing phase of CI
+    cmds:
+      - sh {{.BASE_DOCKER_RUN_COMMAND}} echo "hi"
+
+  ci:build:
+    internal: true
+    desc: Building image for CI
+    cmds:
+      - sh {{.BASE_DOCKER_RUN_COMMAND}} echo "building image"
+
+  cd:deploy:
+    internal: true
+    desc: Deploy to environment
+    cmds:
+      - echo "TBD"
