@@ -1,11 +1,17 @@
 version: '3'
 
 vars:
+  # K3d configuration
   K3D_CLUSTER_NAME: testcluster
   LOCAL_IMAGE_REGISTRY_URI: localregistry.localhost
   LOCAL_IMAGE_REGISTRY_PORT: 12345
-  BASE_DOCKER_RUN_COMMAND: docker run --rm alpine:latest
+
   APP_NAME: role-controller
+
+  # Unifify ci in container
+  CI_IMAGE: alpine:latest
+  BASE_DOCKER_RUN_COMMAND: docker run --rm -v "$(pwd)":/workspace -w /workspace {{.CI_IMAGE}}
+  LOCAL_DIND_COMMAND: docker run --privileged --name dind-container -d docker:stable-dind
 
 tasks:
   default:
@@ -32,6 +38,7 @@ tasks:
         ./get_helm.sh; }
       - command -v go &> /dev/null || { echo "Go is required. Please install Go"; exit 1; }
       - command -v docker &> /dev/null || { echo "Docker is required. Please install Docker"; exit 1; }
+    silent: true
 
   local:bootstrap:
     desc: setup k3d cluster
@@ -55,41 +62,76 @@ tasks:
     desc: Running test
     cmds:
       - go test
+    silent: true
+
+  local:ci:
+    desc: This is local ci that is will be same with what will be executed by pipeline
+    cmds:
+      - task: ci:test
+      - task: ci:build 
+      - task: ci:lint
+    silent: true
+
+  ci:execute:
+    desc: Execute CI (Pipeline Only)
+    cmds:
+      - task: ci:test
+      - task: ci:build
+      - task: ci:lint
+    silent: true
 
   kiki:
     desc: (Easter Egg)
     cmds:
       - echo "I love you my kiki Dayeon :3"
+    silent: true
 
-  build:
+  ci:test:
+    internal: true
+    desc: Testing phase of CI
+    cmds:
+      - |
+        sh {{.BASE_DOCKER_RUN_COMMAND}} \
+          echo "test"
+
+  ci:build:
+    internal: true    
     desc: Building the application
     cmds:
-      - docker build -t {{.APP_NAME}}:{{.SHA}} .
+      - |
+        sh {{.BASE_DOCKER_RUN_COMMAND}} \
+          echo "build" && \
+          sleep 5 && \
+          ls
+        
     vars:
       SHA:
         sh: git rev-parse HEAD
+    silent: true
 
-  ci:execute:
-    desc: Execute CI
-    cmds:
-      - task: ci:test
-      - task: ci:build
-      - task: ci:lint
-
-  ci:test:
+  ci:lint:
     internal: true    
     desc: Testing phase of CI
     cmds:
-      - sh {{.BASE_DOCKER_RUN_COMMAND}} echo "hi"
+      - |
+        sh {{.BASE_DOCKER_RUN_COMMAND}} \
+          echo "test"
+    silent: true
 
-  ci:build:
-    internal: true
-    desc: Building image for CI
+  ci:push:
+    internal: true    
+    desc: Pushing image to registry
     cmds:
-      - sh {{.BASE_DOCKER_RUN_COMMAND}} echo "building image"
+      - |
+        sh {{.BASE_DOCKER_RUN_COMMAND}} \
+          echo "push"
+    silent: true
 
   cd:deploy:
     internal: true
     desc: Deploy to environment
     cmds:
-      - echo "TBD"
+      - |
+        sh {{.BASE_DOCKER_RUN_COMMAND}} \
+          echo "deploy"
+    silent: true
