@@ -8,11 +8,6 @@ vars:
 
   APP_NAME: role-controller
 
-  # Unifify ci in container
-  CI_IMAGE: docker:latest
-  BASE_DOCKER_RUN_COMMAND: docker run --rm -v "$(pwd)":/workspace -w /workspace {{.CI_IMAGE}}
-  LOCAL_DOCKER_RUN_COMMAND: docker run --rm -v "$(pwd)":/workspace -v /var/run/docker.sock:/var/run/docker.sock -w /workspace {{.CI_IMAGE}}
-
 tasks:
   default:
     cmds:
@@ -40,6 +35,7 @@ tasks:
         command -v helm &> /dev/null || { curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \
         chmod 700 get_helm.sh && \
         ./get_helm.sh; }
+      - command -v earthly &> /dev/null ||  { echo "Earthly is required for running ci local. Please install Earthly at https://earthly.dev/get-earthly"; exit 1; }     
       - command -v go &> /dev/null || { echo "Go is required. Please install Go"; exit 1; }
       - command -v docker &> /dev/null || { echo "Docker is required. Please install Docker"; exit 1; }
     silent: true
@@ -68,73 +64,14 @@ tasks:
       - go test
     silent: true
 
-  local:ci:
-    desc: This is local ci that is will be same with what will be executed by pipeline
-    cmds:
-      - task: ci:test
-      - task: ci:build 
-      - task: ci:lint
-    silent: true
-
   ci:execute:
     desc: Execute CI (Pipeline Only)
     cmds:
-      - task: ci:test
-      - task: ci:build
-      - task: ci:lint
+      - earthly -P +ci
     silent: true
 
   kiki:
     desc: (Easter Egg)
     cmds:
       - echo "I love you my kiki Dayeon :3"
-    silent: true
-
-  ci:test:
-    internal: true
-    desc: Testing phase of CI
-    cmds:
-      - |
-        sh {{.BASE_DOCKER_RUN_COMMAND}} \
-          echo "test"
-
-  ci:build:
-    internal: true    
-    desc: Building the application
-    cmds:
-      - |
-        sh {{.BASE_DOCKER_RUN_COMMAND}} \
-          echo "build" && \
-          sleep 5 && \
-          ls
-    vars:
-      SHA:
-        sh: git rev-parse HEAD
-    silent: true
-
-  ci:lint:
-    internal: true    
-    desc: Testing phase of CI
-    cmds:
-      - |
-        sh {{.BASE_DOCKER_RUN_COMMAND}} \
-          echo "test"
-    silent: true
-
-  ci:push:
-    internal: true    
-    desc: Pushing image to registry
-    cmds:
-      - |
-        sh {{.BASE_DOCKER_RUN_COMMAND}} \
-          echo "push"
-    silent: true
-
-  cd:deploy:
-    internal: true
-    desc: Deploy to environment
-    cmds:
-      - |
-        sh {{.BASE_DOCKER_RUN_COMMAND}} \
-          echo "deploy"
     silent: true
