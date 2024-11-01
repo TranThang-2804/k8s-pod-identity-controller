@@ -9,9 +9,9 @@ vars:
   APP_NAME: role-controller
 
   # Unifify ci in container
-  CI_IMAGE: alpine:latest
+  CI_IMAGE: docker:latest
   BASE_DOCKER_RUN_COMMAND: docker run --rm -v "$(pwd)":/workspace -w /workspace {{.CI_IMAGE}}
-  LOCAL_DIND_COMMAND: docker run --privileged --name dind-container -d docker:stable-dind
+  LOCAL_DOCKER_RUN_COMMAND: docker run --rm -v "$(pwd)":/workspace -v /var/run/docker.sock:/var/run/docker.sock -w /workspace {{.CI_IMAGE}}
 
 tasks:
   default:
@@ -21,9 +21,13 @@ tasks:
 
   help:
     cmds:
-      - echo "Welcome to my project - maintainer<Tommy Tran Duc Thang>"
-      - echo "For local development         flow will be local:install -> local:bootstrap -> local:dev -> local:clean"
-      - echo "For ci                        flow will be ci:execute"
+      - echo "Welcome to my project - maintainer<Tommy Tran Duc Thang> - email<tommytran.dev@gmail.com"
+      - echo ""
+      - echo "Run task <command_name> to run predefined script"
+      - echo "For local development         Flow will be local:install -> local:bootstrap -> local:dev -> local:clean"
+      - echo "For local ci test             Run task local:ci"
+      - echo "For ci                        Run task ci:execute"
+      - echo ""
       - task -l
     silent: true
 
@@ -103,7 +107,6 @@ tasks:
           echo "build" && \
           sleep 5 && \
           ls
-        
     vars:
       SHA:
         sh: git rev-parse HEAD
