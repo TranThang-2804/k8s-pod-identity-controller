@@ -64,23 +64,16 @@ tasks:
   local:test:
     desc: Running test
     cmds:
-      - go test
-    silent: true
-
-  local:ci:
-    desc: This is local ci that is will be same with what will be executed by pipeline
-    cmds:
-      - task: ci:test
-      - task: ci:build 
-      - task: ci:lint
+      - go test ./...
     silent: true
 
   ci:execute:
     desc: Execute CI (Pipeline Only)
     cmds:
-      - task: ci:test
-      - task: ci:build
-      - task: ci:lint
+      - earthly +ci --IMAGE_NAME={{.APP_NAME}} --TAG={{.SHA}}
+    vars:
+      SHA:
+        sh: git rev-parse HEAD
     silent: true
 
   kiki:
@@ -89,49 +82,46 @@ tasks:
       - echo "I love you my kiki Dayeon :3"
     silent: true
 
-  ci:test:
-    internal: false
-    desc: Testing phase of CI
-    cmds:
-      - |
-        sh {{.BASE_DOCKER_RUN_COMMAND}} \
-          go test ./... && \
-          ls
-    silent: true
-
-  ci:build:
-    internal: true    
-    desc: Building the application
-    cmds:
-      - docker build -t {{.APP_NAME}}:{{.SHA}} . 
-    vars:
-      SHA:
-        sh: git rev-parse HEAD
-    silent: true
-
-  ci:lint:
-    internal: true    
-    desc: Testing phase of CI
-    cmds:
-      - |
-        sh {{.BASE_DOCKER_RUN_COMMAND}} \
-          echo "Linting"
-    silent: true
-
-  ci:push:
-    internal: true    
-    desc: Pushing image to registry
-    cmds:
-      - |
-        sh {{.BASE_DOCKER_RUN_COMMAND}} \
-          echo "push"
-    silent: true
-
-  cd:deploy:
-    internal: true
-    desc: Deploy to environment
-    cmds:
-      - |
-        sh {{.BASE_DOCKER_RUN_COMMAND}} \
-          echo "Deploying"
-    silent: true
+  # ci:test:
+  #   internal: false
+  #   desc: Testing phase of CI
+  #   cmds:
+  #     - 
+  #   silent: true
+  #
+  # ci:build:
+  #   internal: true    
+  #   desc: Building the application
+  #   cmds:
+  #     - docker build -t {{.APP_NAME}}:{{.SHA}} . 
+  #   vars:
+  #     SHA:
+  #       sh: git rev-parse HEAD
+  #   silent: true
+  #
+  # ci:lint:
+  #   internal: true    
+  #   desc: Testing phase of CI
+  #   cmds:
+  #     - |
+  #       sh {{.BASE_DOCKER_RUN_COMMAND}} \
+  #         echo "Linting"
+  #   silent: true
+  #
+  # ci:push:
+  #   internal: true    
+  #   desc: Pushing image to registry
+  #   cmds:
+  #     - |
+  #       sh {{.BASE_DOCKER_RUN_COMMAND}} \
+  #         echo "push"
+  #   silent: true
+  #
+  # cd:deploy:
+  #   internal: true
+  #   desc: Deploy to environment
+  #   cmds:
+  #     - |
+  #       sh {{.BASE_DOCKER_RUN_COMMAND}} \
+  #         echo "Deploying"
+  #   silent: true
