@@ -9,7 +9,7 @@ ci:
     ARG IMAGE_NAME
     ARG TAG
     RUN echo "Starting CI..."
-    #BUILD +test
+    BUILD +test
     RUN echo "Starting Building..."
     BUILD --pass-args +build
 
