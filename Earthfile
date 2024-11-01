@@ -25,6 +25,6 @@ ci:
 test:
     RUN go test ./...
 
-build-image:
+build:
     FROM DOCKERFILE .
-    SAVE IMAGE my-image:latest
+    SAVE IMAGE $IMAGE_NAME:$TAG
