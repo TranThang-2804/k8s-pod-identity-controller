@@ -63,7 +63,9 @@ func main() {
 		os.Exit(1)
 	}
   
-  controller.Start()
+  if controller.Start() != nil {
+		setupLog.Error(err, "problem starting controller")
+  }
 
 	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
 		setupLog.Error(err, "problem running manager")

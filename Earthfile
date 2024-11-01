@@ -1,16 +1,30 @@
 VERSION 0.8
 FROM docker:latest
+RUN apk update && \
+    apk add --no-cache \
+    curl \
+    git \
+    bash \
+    make \
+    gcc \
+    musl-dev
+RUN curl -LO https://golang.org/dl/go1.17.6.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go1.17.6.linux-amd64.tar.gz && \
+    rm go1.17.6.linux-amd64.tar.gz
+ENV PATH="/usr/local/go/bin:${PATH}"
+WORKDIR /app
+COPY . .
 
 ci:
-    RUN echo "This is a CI step"
+    RUN echo "Starting CI..."
+    RUN echo "Starting Testing..."
     BUILD +test
+    RUN echo "Starting Building..."
     BUILD +build-image
 
 test:
-    RUN echo "This is a test step"
+    RUN go test ./...
 
 build-image:
-    FROM earthly/dind:alpine-3.19-docker-25.0.5-r0
-    WITH DOCKER --pull hello-world
-      RUN docker run hello-world
-    END
+    FROM DOCKERFILE .
+    SAVE IMAGE my-image:latest
