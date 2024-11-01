@@ -21,9 +21,9 @@ tasks:
 
   help:
     cmds:
-      - echo "Welcome to my project - maintainer<Tommy Tran Duc Thang> - email<tommytran.dev@gmail.com"
+      - echo "Welcome to my project - maintainer<Tommy Tran Duc Thang> - email<tommytran.dev@gmail.com>"
       - echo ""
-      - echo "Run task <command_name> to run predefined script"
+      - echo "Run task <task_name> to run predefined script"
       - echo "For local development         Flow will be local:install -> local:bootstrap -> local:dev -> local:clean"
       - echo "For local ci test             Run task local:ci"
       - echo "For ci                        Run task ci:execute"
