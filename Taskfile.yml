@@ -24,9 +24,8 @@ tasks:
       - echo "For install dev environment   task local:install"
       - echo "Going into dev environment    task local:shell"
       - echo "For local development         Flow will be task local:shell -> task local:bootstrap -> task local:dev -> task local:clean"
-      - echo "For local ci testing          task local:ci"
       - echo ""
-      - echo "For running ci on pipeline    task ci:execute"
+      - echo "For running ci on pipeline    task ci:execute but if running it from local make sure you run task:shell first"
       - echo ""
       - task -l
     silent: true
@@ -88,12 +87,6 @@ tasks:
     cmds:
       - go test ./...
     silent: true
-
-  local:ci:
-    desc: This is command for running ci in your local env, this ci is exactly the same with ci:execute on remote pipeline 
-    deps: [local:shell:check]
-    cmds:
-      - task: ci:execute
 
   ci:execute:
     desc: Execute CI (Pipeline Only)
