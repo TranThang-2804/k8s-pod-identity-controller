@@ -24,7 +24,9 @@ tasks:
       - echo "For install dev environment   task local:install"
       - echo "Going into dev environment    task local:shell"
       - echo "For local development         Flow will be task local:shell -> task local:bootstrap -> task local:dev -> task local:clean"
-      - echo "For running ci                task ci:execute"
+      - echo "For local ci testing          task local:ci"
+      - echo ""
+      - echo "For running ci on pipeline    task ci:execute"
       - echo ""
       - task -l
     silent: true
