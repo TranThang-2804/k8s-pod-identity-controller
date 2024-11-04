@@ -8,10 +8,6 @@ vars:
 
   APP_NAME: role-controller
 
-  # Unifify ci in container
-  CI_IMAGE: golang:latest
-  BASE_DOCKER_RUN_COMMAND: docker run --rm -v "$(pwd)":/workspace -w /workspace {{.CI_IMAGE}}
-
 tasks:
   default:
     cmds:
@@ -33,18 +29,12 @@ tasks:
   local:install:
     desc: install dependancies for macOS and Ubuntu
     cmds:
-      - command -v tilt &> /dev/null || curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh | bash
-      - command -v k3d &> /dev/null || curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
-      - |
-        command -v helm &> /dev/null || { curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \
-        chmod 700 get_helm.sh && \
-        ./get_helm.sh; }
-      - command -v go &> /dev/null || { echo "Go is required. Please install Go"; exit 1; }
-      - command -v docker &> /dev/null || { echo "Docker is required. Please install Docker"; exit 1; }
+      - command -v devbox &> /dev/null || { curl -fsSL https://get.jetify.com/devbox | bash; }
+      - devbox install 
     silent: true
 
   local:bootstrap:
-    desc: setup k3d cluster
+    desc: setup k3d cluster for dev environment
     cmds:
       - k3d registry create {{.LOCAL_IMAGE_REGISTRY_URI}} --port {{.LOCAL_IMAGE_REGISTRY_PORT}}
       - k3d cluster create {{.K3D_CLUSTER_NAME}} --registry-use k3d-{{.LOCAL_IMAGE_REGISTRY_URI}}:{{.LOCAL_IMAGE_REGISTRY_PORT}}
