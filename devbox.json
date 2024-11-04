@@ -2,7 +2,6 @@
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.13.6/.schema/devbox.schema.json",
   "packages": [
     "go@1.22.3",
-    "go-task@latest",
     "earthly@latest",
     "k3d@latest"
   ],

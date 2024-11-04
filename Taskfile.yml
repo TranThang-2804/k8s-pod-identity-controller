@@ -19,33 +19,62 @@ tasks:
       - echo "Welcome to my project - maintainer<Tommy Tran Duc Thang> - email<tommytran.dev@gmail.com>"
       - echo ""
       - echo "Run task <task_name> to run predefined script"
-      - echo "For local development         Flow will be local:install -> local:bootstrap -> local:dev -> local:clean"
-      - echo "For local ci test             Run task local:ci"
-      - echo "For ci                        Run task ci:execute"
+      - echo "Note":" commands start with local":" are for local development"
+      - echo ""
+      - echo "For install dev environment   task local:install"
+      - echo "Going into dev environment    task local:shell"
+      - echo "For local development         Flow will be task local:shell -> task local:bootstrap -> task local:dev -> task local:clean"
+      - echo "For running ci                task ci:execute"
       - echo ""
       - task -l
     silent: true
 
   local:install:
-    desc: install dependancies for macOS and Ubuntu
+    desc: install required tools, setup env for macOS and Ubuntu
     cmds:
       - command -v devbox &> /dev/null || { curl -fsSL https://get.jetify.com/devbox | bash; }
       - devbox install 
     silent: true
 
+  local:shell:
+    desc: Getting into dev shell that has all required tools for development
+    cmds:
+      - |
+        if [ "$DEVBOX_SHELL_ENABLED" != "1" ]; then
+          echo "Going into devbox shell"
+          devbox shell
+        fi
+      - echo "You already in devbox shell"
+    silent: true
+
+  local:shell:check:
+    desc: Getting into dev shell that has all required tools for development
+    cmds:
+      - |
+        if [ "$DEVBOX_SHELL_ENABLED" != "1" ]; then
+          echo "You are not in devbox shell. Please go into a devbox shell first by running:"
+          echo "task local:shell"
+          exit 1; 
+        fi
+    silent: true
+    internal: true
+
   local:bootstrap:
     desc: setup k3d cluster for dev environment
+    deps: [local:shell:check]
     cmds:
       - k3d registry create {{.LOCAL_IMAGE_REGISTRY_URI}} --port {{.LOCAL_IMAGE_REGISTRY_PORT}}
       - k3d cluster create {{.K3D_CLUSTER_NAME}} --registry-use k3d-{{.LOCAL_IMAGE_REGISTRY_URI}}:{{.LOCAL_IMAGE_REGISTRY_PORT}}
 
   local:dev:
     desc: Setup the application in the local cluster and enable hot reloading for development
+    deps: [local:shell:check]
     cmds:
       - tilt up
 
   local:clean:
     desc: clean up all resources
+    deps: [local:shell:check]
     cmds:
       - tilt down
       - k3d cluster delete {{.K3D_CLUSTER_NAME}}
@@ -53,9 +82,16 @@ tasks:
 
   local:test:
     desc: Running test
+    deps: [local:shell:check]
     cmds:
       - go test ./...
     silent: true
+
+  local:ci:
+    desc: This is command for running ci in your local env, this ci is exactly the same with ci:execute on remote pipeline 
+    deps: [local:shell:check]
+    cmds:
+      - task: ci:execute
 
   ci:execute:
     desc: Execute CI (Pipeline Only)
