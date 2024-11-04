@@ -16,6 +16,25 @@ So use this when:
 > NOTE:
 > This is good for dev environment, but for production environment, please use this with awareness.
 
+# Prerequisites
+You only need to install task file: https://taskfile.dev/installation/
+
+After installed task file just run:
+```
+task local:install
+```
+This will install all required tool including devbox, go, earthly, ...
+
+To go into the development shell environment of those installed tool, run:
+```
+task local:shell
+```
+
+For seeing all command, run:
+```
+task help
+```
+
 # Architecture
 ![Architecture Image](./docs/images/design.jpg)
 
