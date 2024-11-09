@@ -91,7 +91,7 @@ tasks:
   ci:execute:
     desc: Execute CI (Pipeline Only)
     cmds:
-      - earthly +ci --IMAGE_NAME={{.APP_NAME}} --TAG={{.SHA}}
+      - earthly --ci +ci --IMAGE_NAME={{.APP_NAME}} --TAG={{.SHA}}
     vars:
       SHA:
         sh: git rev-parse HEAD
