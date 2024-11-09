@@ -9,8 +9,8 @@ ci:
     ARG IMAGE_NAME=k8s-pod-identity-controller
     ARG TAG=latest
     RUN echo "Starting CI..."
+    BUILD +lint
     BUILD +test
-    RUN echo "Starting Building..."
     BUILD --pass-args +build
 
 lint:
@@ -32,4 +32,4 @@ build:
     RUN go build -o main .
     EXPOSE 8080
     CMD ["./main"]
-    SAVE IMAGE $IMAGE_NAME:$TAG
+    #SAVE IMAGE $IMAGE_NAME:$TAG
