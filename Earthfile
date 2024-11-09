@@ -7,7 +7,7 @@ RUN go mod download
 
 ci:
     ARG IMAGE_NAME=k8s-pod-identity-controller
-    ARG TAG
+    ARG TAG=latest
     RUN echo "Starting CI..."
     BUILD +test
     RUN echo "Starting Building..."
@@ -18,7 +18,6 @@ lint:
     COPY . .
     RUN echo "Starting Linting..."
     CMD ["golangci-lint", "run"] 
-
 
 test:
     RUN echo "Starting Testing..."
