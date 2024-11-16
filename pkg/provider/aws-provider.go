@@ -1,9 +1,13 @@
 package provider
 
-type AWSProviderClient struct{}
+type AWSProviderClient struct{
+  awsRoleArn string
+}
 
-func NewAwsProviderClient() (*AWSProviderClient, error) {
-	return &AWSProviderClient{}, nil
+func NewAwsProviderClient(awsRoleArn string) (*AWSProviderClient, error) {
+	return &AWSProviderClient{
+    awsRoleArn: awsRoleArn,
+  }, nil
 }
 
 func (c *AWSProviderClient) AssumeRole() error {
