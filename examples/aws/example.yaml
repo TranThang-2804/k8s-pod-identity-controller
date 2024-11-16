@@ -5,10 +5,10 @@ metadata:
   name: "sample-example"
   namespace: default
 spec:
+  serviceAccountName: sample-service-account
   containers:
   - name: sample-example
     image: "nginx:latest"
-    serviceAccountName: sample-service-account
     ports:
     - containerPort: 80
       name: http
