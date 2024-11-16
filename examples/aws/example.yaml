@@ -7,8 +7,16 @@ metadata:
 spec:
   containers:
   - name: sample-example
-    image: "nginx:latest" ports:
+    image: "nginx:latest"
+    serviceAccountName: sample-service-account
+    ports:
     - containerPort: 80
       name: http
 ---
-
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sample-service-account
+  namespace: default
+  annotations:
+    AWS_ROLE_ARN: "arn-sample" 
