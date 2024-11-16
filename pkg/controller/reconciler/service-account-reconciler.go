@@ -76,9 +76,15 @@ func (r *ServiceAccountReconciler) handleRoleIntegration(ctx context.Context, an
 	for _, cloudProvider := range utils.SplitAndRemoveWhitespace(&providerList) {
 		switch cloudProvider {
     case string(constants.AWS):
-      providerClient = provider.NewAwsProviderClient()
+      awsProviderClient, err := provider.NewAwsProviderClient()
+      if err != nil {
+        logger.Error(err, "Failed to create AWS provider client")
+      }
+      providerClient = awsProviderClient
     default:
       logger.Info("Invalid cloud provider", "cloudProvider", cloudProvider)
 		}
 	}
+
+  providerClient.AssumeRole()
 }
