@@ -8,6 +8,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 
 	"github.com/TranThang-2804/k8s-pod-identity-controller/pkg/constants"
+	"github.com/TranThang-2804/k8s-pod-identity-controller/pkg/utils"
 	"k8s.io/client-go/dynamic"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -50,21 +51,11 @@ func (r *ServiceAccountReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 		return ctrl.Result{}, err
 	}
 
-	annotations := sa.GetAnnotations()
-
 	logger.Info("serviceAccountName", sa.Name)
 
-	for key, value := range annotations {
-		switch key {
-		case constants.AWS_ROLE_ANNOTATION:
-			fmt.Println("AWS_ROLE_ANNOTATION", value)
-		case constants.GCP_ROLE_ANNOTATION:
-			fmt.Println("AWS_ROLE_ANNOTATION", value)
-		case constants.AZURE_ROLE_ANNOTATION:
-			fmt.Println("AWS_ROLE_ANNOTATION", value)
-		default:
-			continue
-		}
+  providerList := sa.Annotations["ENABLE_CLOUD_PROVIDER"]
+	for _, cloudProvider := range utils.SplitAndRemoveWhitespace(&providerList) {
+    constants.IsValidProviderType(cloudProvider)
 	}
 
 	return ctrl.Result{}, nil
@@ -75,4 +66,9 @@ func (r *ServiceAccountReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&corev1.ServiceAccount{}).
 		Complete(r)
+}
+
+func (r *ServiceAccountReconciler) handleRoleIntegration(providerType constants.ProviderType) client.Client {
+	fmt.Print(providerType)
+	return r.Client
 }
