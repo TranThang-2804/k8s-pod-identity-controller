@@ -1,0 +1,14 @@
+# https://kubernetes.io/docs/concepts/workloads/pods/
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "sample-example"
+  namespace: default
+spec:
+  containers:
+  - name: sample-example
+    image: "nginx:latest" ports:
+    - containerPort: 80
+      name: http
+---
+
