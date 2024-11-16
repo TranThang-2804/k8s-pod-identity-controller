@@ -7,6 +7,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 
+	"github.com/TranThang-2804/k8s-pod-identity-controller/pkg/constants"
 	"k8s.io/client-go/dynamic"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -37,8 +38,8 @@ func NewServiceAccountReconciler(mgr ctrl.Manager) (*ServiceAccountReconciler, e
 func (r *ServiceAccountReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	// Fetch the SA
 	sa := &corev1.ServiceAccount{}
+
 	err := r.Get(ctx, req.NamespacedName, sa)
 	if err != nil {
 		if client.IgnoreNotFound(err) == nil {
@@ -47,6 +48,23 @@ func (r *ServiceAccountReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 		}
 		logger.Error(err, "Failed to get Service Account", "service account", req.NamespacedName)
 		return ctrl.Result{}, err
+	}
+
+	annotations := sa.GetAnnotations()
+
+	logger.Info("serviceAccountName", sa.Name)
+
+	for key, value := range annotations {
+		switch key {
+		case constants.AWS_ROLE_ANNOTATION:
+			fmt.Println("AWS_ROLE_ANNOTATION", value)
+		case constants.GCP_ROLE_ANNOTATION:
+			fmt.Println("AWS_ROLE_ANNOTATION", value)
+		case constants.AZURE_ROLE_ANNOTATION:
+			fmt.Println("AWS_ROLE_ANNOTATION", value)
+		default:
+			continue
+		}
 	}
 
 	return ctrl.Result{}, nil
