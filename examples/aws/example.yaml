@@ -19,5 +19,5 @@ metadata:
   name: sample-service-account
   namespace: default
   annotations:
-    ENABLE_PROVIDER_ROLE: "aws"
+    ENABLE_CLOUD_PROVIDER: "aws, lol"
     AWS_ROLE_ARN: "arn-sample" 

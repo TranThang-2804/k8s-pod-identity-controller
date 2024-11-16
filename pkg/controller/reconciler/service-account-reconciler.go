@@ -8,6 +8,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 
 	"github.com/TranThang-2804/k8s-pod-identity-controller/pkg/constants"
+	"github.com/TranThang-2804/k8s-pod-identity-controller/pkg/provider"
 	"github.com/TranThang-2804/k8s-pod-identity-controller/pkg/utils"
 	"k8s.io/client-go/dynamic"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -53,10 +54,7 @@ func (r *ServiceAccountReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 
 	logger.Info("serviceAccountName", sa.Name)
 
-  providerList := sa.Annotations["ENABLE_CLOUD_PROVIDER"]
-	for _, cloudProvider := range utils.SplitAndRemoveWhitespace(&providerList) {
-    constants.IsValidProviderType(cloudProvider)
-	}
+	r.handleRoleIntegration(ctx, sa.Annotations)
 
 	return ctrl.Result{}, nil
 }
@@ -68,7 +66,19 @@ func (r *ServiceAccountReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-func (r *ServiceAccountReconciler) handleRoleIntegration(providerType constants.ProviderType) client.Client {
-	fmt.Print(providerType)
-	return r.Client
+func (r *ServiceAccountReconciler) handleRoleIntegration(ctx context.Context, annotations map[string]string) {
+	logger := log.FromContext(ctx)
+
+	providerList := annotations[constants.ENABLE_CLOUD_PROVIDER_Annotation]
+
+  var providerClient provider.ProviderClient
+
+	for _, cloudProvider := range utils.SplitAndRemoveWhitespace(&providerList) {
+		switch cloudProvider {
+    case string(constants.AWS):
+      providerClient = provider.NewAwsProviderClient()
+    default:
+      logger.Info("Invalid cloud provider", "cloudProvider", cloudProvider)
+		}
+	}
 }

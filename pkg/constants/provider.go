@@ -1,5 +1,9 @@
 package constants
 
+import (
+	"errors"
+)
+
 type ProviderType string
 
 const (
@@ -8,11 +12,15 @@ const (
 	GCP   ProviderType = "gcp"
 )
 
-func IsValidProviderType(providerType string) bool {
+func IsValidProviderType(providerType string) error {
 	switch providerType {
-	case string(AWS), string(AZURE), string(GCP):
-		return true
+	case string(AWS):
+		return nil
+	case string(GCP):
+		return nil
+	case string(AZURE):
+		return nil
 	default:
-		return false
+		return errors.New("Invalid provider type: " + providerType)
 	}
 }
