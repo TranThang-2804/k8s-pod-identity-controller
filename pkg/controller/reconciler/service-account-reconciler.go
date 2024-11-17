@@ -69,22 +69,32 @@ func (r *ServiceAccountReconciler) SetupWithManager(mgr ctrl.Manager) error {
 func (r *ServiceAccountReconciler) handleRoleIntegration(ctx context.Context, annotations map[string]string) {
 	logger := log.FromContext(ctx)
 
-	providerList := annotations[constants.ENABLE_CLOUD_PROVIDER_Annotation]
+	providerList, exists := annotations[constants.ENABLE_CLOUD_PROVIDER_Annotation]
+	if !exists || providerList == "" {
+		return
+	}
 
-  var providerClient provider.ProviderClient
+	var providerClient provider.ProviderClient
 
 	for _, cloudProvider := range utils.SplitAndRemoveWhitespace(&providerList) {
 		switch cloudProvider {
-    case string(constants.AWS):
-      awsProviderClient, err := provider.NewAwsProviderClient(annotations[constants.AWS_ROLE_ANNOTATION])
-      if err != nil {
-        logger.Error(err, "Failed to create AWS provider client")
-      }
-      providerClient = awsProviderClient
-    default:
-      logger.Info("Invalid cloud provider", "cloudProvider", cloudProvider)
+		case string(constants.AWS):
+			awsRoleArn, exists := annotations[constants.AWS_ROLE_ANNOTATION]
+			if !exists || awsRoleArn == "" {
+				logger.Error(nil, "AWS role ARN not found")
+				return
+			}
+
+			awsProviderClient, err := provider.NewAwsProviderClient(awsRoleArn)
+			if err != nil {
+				logger.Error(err, "Failed to create AWS provider client")
+			}
+
+			providerClient = awsProviderClient
+		default:
+			logger.Info("Invalid cloud provider", "cloudProvider", cloudProvider)
 		}
 	}
 
-  providerClient.AssumeRole()
+	providerClient.AssumeRole()
 }

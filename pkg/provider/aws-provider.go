@@ -11,5 +11,6 @@ func NewAwsProviderClient(awsRoleArn string) (*AWSProviderClient, error) {
 }
 
 func (c *AWSProviderClient) AssumeRole() error {
+
 	return nil
 }
