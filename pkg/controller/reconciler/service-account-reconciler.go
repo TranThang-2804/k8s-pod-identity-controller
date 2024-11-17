@@ -85,7 +85,7 @@ func (r *ServiceAccountReconciler) handleRoleIntegration(ctx context.Context, an
 				return
 			}
 
-			awsProviderClient, err := provider.NewAwsProviderClient(awsRoleArn)
+			awsProviderClient, err := provider.NewAwsProviderClient(awsRoleArn, ctx)
 			if err != nil {
 				logger.Error(err, "Failed to create AWS provider client")
 			}

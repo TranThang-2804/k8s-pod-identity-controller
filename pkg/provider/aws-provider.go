@@ -1,16 +1,26 @@
 package provider
 
-type AWSProviderClient struct{
-  awsRoleArn string
+import (
+	"context"
+
+	"sigs.k8s.io/controller-runtime/pkg/log"
+)
+
+type AWSProviderClient struct {
+	awsRoleArn string
+	context    context.Context
 }
 
-func NewAwsProviderClient(awsRoleArn string) (*AWSProviderClient, error) {
+func NewAwsProviderClient(awsRoleArn string, context context.Context) (*AWSProviderClient, error) {
 	return &AWSProviderClient{
-    awsRoleArn: awsRoleArn,
-  }, nil
+		awsRoleArn: awsRoleArn,
+		context:    context,
+	}, nil
 }
 
 func (c *AWSProviderClient) AssumeRole() error {
+	logger := log.FromContext(c.context)
+  logger.Info("Assuming role successfully")
 
 	return nil
 }
